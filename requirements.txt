@@ -16,3 +16,4 @@ langdetect
 emoji>=2.0.0
 plotly
 nrclex
+scikit-learn
