@@ -1,11 +1,11 @@
-FROM python:3.11-slim
+FROM python:3.10-slim
 
 WORKDIR /app
 
-COPY --chown=user requirements.txt requirements.txt
-RUN pip install --no-cache-dir -r requirements.txt
+COPY requirements.txt .
+RUN pip install -r requirements.txt
 
-COPY --chown=user . /app
+COPY . .
 
 EXPOSE 7860
 
