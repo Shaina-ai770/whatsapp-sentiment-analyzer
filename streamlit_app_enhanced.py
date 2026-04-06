@@ -3153,7 +3153,7 @@ if "raw_chat_bytes" in st.session_state:
                            "sentiment_results.csv", "text/csv", key="export_main")
     with c2:
         if st.button("📄 Generate PDF Report"):
-            pdf_data = generate_pdf_report(filtered_df, sentiment_col, model_name=analysis_method)
+            pdf_data = generate_pdf_report(filtered_df, sentiment_col)
             st.download_button("📄 Download PDF", pdf_data, "sentiment_report.pdf",
                                "application/pdf", key="pdf_dl_btn")
 
