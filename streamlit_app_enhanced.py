@@ -3055,6 +3055,14 @@ if "raw_chat_bytes" in st.session_state:
                 _tc = "#e6edf3" if _is_dark else "#1a1a2e"
                 _bg = "rgba(22,27,34,0.95)" if _is_dark else "rgba(255,255,255,0.95)"
                 _br = "rgba(88,166,255,0.15)" if _is_dark else "rgba(99,102,241,0.15)"
+                _fdf = filtered_df.copy()
+                _fdf["signed_score"] = _fdf.apply(
+                    lambda row: row["sentiment_score"]
+                    if str(row["sentiment"]).lower() == "positive"
+                    else (-row["sentiment_score"]
+                          if str(row["sentiment"]).lower() == "negative"
+                          else 0.0), axis=1
+                )
                 c1,c2 = st.columns(2)
                 for col, title, asc_val, hdr_color in [
                     (c1,"👍 Top Positive",False,"#3fb950"),
@@ -3062,12 +3070,12 @@ if "raw_chat_bytes" in st.session_state:
                 ]:
                     with col:
                         st.markdown(f"<h5 style='color:{_tc};margin-bottom:12px;'>{title}</h5>", unsafe_allow_html=True)
-                        _tdf = filtered_df.sort_values("sentiment_score", ascending=asc_val).head(5)[["datetime","author","message","sentiment_score"]]
+                        _tdf = _fdf.sort_values("signed_score", ascending=asc_val).head(5)[["datetime","author","message","signed_score"]]
                         _rows_t = ""
                         for i, r in _tdf.iterrows():
                             _rbg = "rgba(88,166,255,0.04)" if i%2==0 else "transparent"
-                            sc = "#3fb950" if float(r["sentiment_score"])>0 else ("#f78166" if float(r["sentiment_score"])<0 else "#8b949e")
-                            _rows_t += f"<tr style='background:{_rbg};'><td style='padding:8px;color:#8b949e;font-size:0.75rem;border-bottom:1px solid {_br};'>{str(r['datetime'])[:16]}</td><td style='padding:8px;color:{_tc};font-weight:600;font-size:0.8rem;border-bottom:1px solid {_br};'>{r['author']}</td><td style='padding:8px;color:{_tc};font-size:0.78rem;border-bottom:1px solid {_br};'>{str(r['message'])[:50]}...</td><td style='padding:8px;color:{sc};font-weight:700;font-size:0.82rem;border-bottom:1px solid {_br};'>{r['sentiment_score']:.3f}</td></tr>"
+                            sc = "#3fb950" if float(r["signed_score"])>0 else ("#f78166" if float(r["signed_score"])<0 else "#8b949e")
+                            _rows_t += f"<tr style='background:{_rbg};'><td style='padding:8px;color:#8b949e;font-size:0.75rem;border-bottom:1px solid {_br};'>{str(r['datetime'])[:16]}</td><td style='padding:8px;color:{_tc};font-weight:600;font-size:0.8rem;border-bottom:1px solid {_br};'>{r['author']}</td><td style='padding:8px;color:{_tc};font-size:0.78rem;border-bottom:1px solid {_br};'>{str(r['message'])[:50]}...</td><td style='padding:8px;color:{sc};font-weight:700;font-size:0.82rem;border-bottom:1px solid {_br};'>{r['signed_score']:.3f}</td></tr>"
                         st.markdown(f"<div style='background:{_bg};border:1px solid {_br};border-radius:12px;overflow:hidden;'><table style='width:100%;border-collapse:collapse;'><thead><tr style='background:linear-gradient(135deg,{hdr_color},{hdr_color}99);'><th style='padding:9px 8px;color:white;font-size:0.72rem;'>Date</th><th style='padding:9px 8px;color:white;font-size:0.72rem;'>Author</th><th style='padding:9px 8px;color:white;font-size:0.72rem;'>Message</th><th style='padding:9px 8px;color:white;font-size:0.72rem;'>Score</th></tr></thead><tbody>{_rows_t}</tbody></table></div>", unsafe_allow_html=True)
         with all_tab:
             _is_dark = st.session_state.get("theme","dark") == "dark"
