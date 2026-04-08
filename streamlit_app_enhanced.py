@@ -1576,7 +1576,7 @@ def render_model_performance_tab(filtered_df, analysis_method, selected_language
     elif "vader_compound" in filtered_df.columns and "sentiment_score" in filtered_df.columns:
         vader_labels = filtered_df["vader_compound"].apply(
             lambda x: "Positive" if x >= 0.05 else ("Negative" if x <= -0.05 else "Neutral"))
-        model_labels = filtered_df["sentiment"].str.capitalize()
+        model_labels = filtered_df["sentiment"].str.strip().str.capitalize()
         agree = (vader_labels == model_labels)
         agree_pct = agree.mean() * 100
         disagree_pct = 100 - agree_pct
