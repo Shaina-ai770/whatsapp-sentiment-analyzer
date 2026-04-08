@@ -2327,7 +2327,7 @@ def process_data(bytes_data, _analysis_method, _include_emotions=False,
             with st.spinner("🌍 Running multilingual multimodal analysis..."):
                 # Step 1: Run Transformer first and save results
                 df = apply_multilingual_analysis(df, show_progress=False, include_lang_col=True)
-                df["transformer_sentiment"] = df["sentiment"]
+                df["transformer_sentiment"] = df["sentiment"].str.capitalize()
                 df["transformer_score"] = df["sentiment_score"]
                 df["vader_compound"] = df["sentiment_score"]
                 try:
