@@ -2710,10 +2710,12 @@ if "raw_chat_bytes" in st.session_state:
             ui_divider()
             if filtered_df["author"].nunique() >= 2:
                 us = pd.crosstab(filtered_df["author"], filtered_df[sentiment_col], normalize="index").mul(100).round(1)
-                for col in ["Positive","positive","Negative","negative"]:
+                # Normalize columns to lowercase
+                us.columns = [str(c).lower() for c in us.columns]
+                for col in ["positive","negative","neutral"]:
                     if col not in us.columns: us[col] = 0
-                pos_col = "Positive" if "Positive" in us.columns else "positive"
-                neg_col = "Negative" if "Negative" in us.columns else "negative"
+                pos_col = "positive"
+                neg_col = "negative"
                 most_pos = us[pos_col].idxmax()
                 most_neg = us[neg_col].idxmax()
                 pos_pct = us[pos_col].max()
